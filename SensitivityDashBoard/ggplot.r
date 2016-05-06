@@ -2,37 +2,51 @@
 
 PlotCurve <- function(FileName, FuncNum)
 {
-  if (FuncNum < 15){
-    Optimal <- -1400 + 100*(FuncNum - 1)
-  }
-  else
-  {
-    Optimal <- 100*(FuncNum - 14)
-  }
   TarRange <- c(0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001)
   NumArray <- c(0:10)
   RegionArray <- c(1:21)
   #x_label <- as.double(c('5','6.295','7.924','9.976','12.559','15.811','19.905','25.059','31.548','39.716','50','62.946','79.245','99.763','125.59','158.114','199.054','250.594','315.479','397.164','500'))
   NumMovedMatrix <- as.data.frame(matrix(NA, nrow = as.integer(nrow(FileName)), ncol = as.integer(length(TarRange))))
   
-  for (t in 1:length(TarRange))
-  {
-    for (r in 1:nrow(FileName))
+  if (FuncNum < 15){
+    Optimal <- -1400 + 100*(FuncNum - 1)
+    
+    for (t in 1:length(TarRange))
     {
-      for (column in 1:ncol(FileName))
+      for (r in 1:nrow(FileName))
       {
-        #check NA
-        if (is.na(FileName[r,column] < (1-TarRange[t])*Optimal) == TRUE)
+        for (column in 1:ncol(FileName))
         {
-          
-        }
-        else if (FileName[r,column] < (1-TarRange[t])*Optimal)
-        {
-          NumMovedMatrix[r,t] <- NumArray[column]
-          break
+          #check NA
+          if (is.na(FileName[r,column] < (1-TarRange[t])*Optimal) == TRUE){}
+          else if (FileName[r,column] < (1-TarRange[t])*Optimal){
+            NumMovedMatrix[r,t] <- NumArray[column]
+            break
+          }
         }
       }
     }
+    
+  }
+  else{
+    Optimal <- 100*(FuncNum - 14)
+    
+    for (t in 1:length(TarRange))
+    {
+      for (r in 1:nrow(FileName))
+      {
+        for (column in 1:ncol(FileName))
+        {
+          #check NA
+          if (is.na(FileName[r,column] < (1+TarRange[t])*Optimal) == TRUE){}
+          else if (FileName[r,column] < (1+TarRange[t])*Optimal){
+            NumMovedMatrix[r,t] <- NumArray[column]
+            break
+          }
+        }
+      }
+    }
+    
   }
   
   StackedNumMoved <- with(NumMovedMatrix,
